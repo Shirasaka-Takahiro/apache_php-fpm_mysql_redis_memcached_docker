@@ -18,8 +18,11 @@ COPY web/conf/www.example.com.conf /usr/local/apache2/conf/extra
 RUN groupmod -g 1000 www-data
 RUN usermod -u 1000 www-data
 
+#イメージのベースOSが古すぎて404になるため、updateは実施しない
+#RUN apt-get update -y && apt-get install less
+
 #ドキュメントルート作成
-RUN apt-get update -y && apt-get install less && mkdir -p /var/www/vhosts/www.example.com/public_html
+RUN mkdir -p /var/www/vhosts/www.example.com/public_html
 
 #appコンテナ配下のソースコードをコピー
 COPY ./app/src /var/www/vhosts/www.example.com/public_html

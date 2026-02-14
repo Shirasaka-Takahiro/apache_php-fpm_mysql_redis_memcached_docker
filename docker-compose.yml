@@ -26,8 +26,8 @@ services:
     restart: always
     env_file: .env/db_env_file
     volumes:
-      - ./mysql/data:/var/lib/mysql
-      - ./mysql/conf/my.cnf:/etc/my.cnf
+      - ./db/data:/var/lib/mysql
+      - ./db/conf/my.cnf:/etc/my.cnf
     ports:
       - "3306:3306"
 
@@ -50,7 +50,3 @@ services:
     restart: always
     ports:
       - "11211:11211"
-    command:
-      - --conn-limit=1024
-      - --memory-limit=64
-      - --threads=4
