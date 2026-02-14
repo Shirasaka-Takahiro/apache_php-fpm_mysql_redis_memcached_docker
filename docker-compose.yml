@@ -1,0 +1,56 @@
+version: "3.9"
+services:
+  web01:
+    build:
+      context: ./
+      dockerfile: web/Dockerfile
+    volumes:
+      - ./app/src:/var/www/vhosts/www.example.com/public_html
+    ports:
+      - "80:80"
+
+  app01:
+    build:
+      context: ./
+      dockerfile: app/Dockerfile
+    volumes:
+      - ./app/src:/var/www/vhosts/www.example.com/public_html
+    restart: always
+    depends_on:
+      - web01
+  
+  db01:
+    build:
+      context: ./
+      dockerfile: db/Dockerfile
+    restart: always
+    env_file: .env/db_env_file
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/conf/my.cnf:/etc/my.cnf
+    ports:
+      - "3306:3306"
+
+  redis01:
+    build:
+      context: ./
+      dockerfile: redis/Dockerfile
+    restart: always
+    env_file: .env/redis_env_file
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+  
+  memcached01:
+    build:
+      context: ./
+      dockerfile: memcached/Dockerfile
+    restart: always
+    ports:
+      - "11211:11211"
+    command:
+      - --conn-limit=1024
+      - --memory-limit=64
+      - --threads=4
